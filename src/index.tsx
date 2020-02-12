@@ -67,6 +67,7 @@ export const createPortalNode = <C extends Component<any>>(): PortalNode<C> => {
             console.log('portalNode.mount()', {
                 newParent, newPlaceholder,
                 parent, lastPlaceholder,
+                portalNode,
             });
 
             if (!portalNode.element) {
@@ -78,7 +79,7 @@ export const createPortalNode = <C extends Component<any>>(): PortalNode<C> => {
 
                 console.log('CREATED portalNode.element!!!', portalNode.element);
 
-            } else if (newParent.tagName !== newPlaceholder.tagName) {
+            } else if (newParent.tagName !== portalNode.element.tagName) {
                 const oldElement = portalNode.element;
 
                 if (newParent instanceof SVGElement) {

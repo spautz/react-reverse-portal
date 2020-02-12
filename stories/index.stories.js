@@ -280,6 +280,37 @@ storiesOf('Portals', module)
             </div>
         });
     })
+    .add('persist DOM while moving within SVGs', () => {
+        const portalNode = portals.createPortalNode('text');
+
+        return React.createElement(() => {
+            const [inFirstSvg, setSvgToUse] = React.useState(false);
+
+            return <div>
+                <button onClick={() => setSvgToUse(!inFirstSvg)}>
+                    Click to move the OutPortal within the SVG
+                </button>
+
+                <svg>
+                    <portals.InPortal node={portalNode}>
+                        <foreignObject width="300" height="50">
+                            <video src="https://media.giphy.com/media/l0HlKghz8IvrQ8TYY/giphy.mp4" controls loop />
+                        </foreignObject>
+                    </portals.InPortal>
+
+                    <rect x={0} y={0} width={300} height={50} fill="gray"></rect>
+                    <rect x={0} y={50} width={300} height={50} fill="lightblue"></rect>
+
+                    <svg x={30} y={10}>
+                        { inFirstSvg && <portals.OutPortal node={portalNode} /> }
+                    </svg>
+                    <svg x={30} y={70}>
+                        { !inFirstSvg && <portals.OutPortal node={portalNode} /> }
+                    </svg>
+                </svg>
+            </div>
+        })
+    })
     .add('Example from README', () => {
         const MyExpensiveComponent = () => 'expensive!';
 
