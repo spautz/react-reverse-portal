@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDom from 'react-dom';
 
 import { storiesOf } from '@storybook/react';
 
@@ -11,7 +12,7 @@ const Container = (props) =>
 
 storiesOf('Portals', module)
     .add('render things in different places', () => {
-        const portalNode = portals.createPortalNode('span');
+        const portalNode = portals.createPortalNode();
 
         return <div>
             <div>
@@ -185,7 +186,7 @@ storiesOf('Portals', module)
         });
     })
     .add('renders reliably, even with frequent changes and multiple portals', () => {
-        const portalNode = portals.createPortalNode('div');
+        const portalNode = portals.createPortalNode();
 
         const Target = (p) => p.value.toString();
 
@@ -227,7 +228,7 @@ storiesOf('Portals', module)
         </div>;
     })
     .add('works with SVGs', () => {
-        const portalNode = portals.createPortalNode('text');
+        const portalNode = portals.createPortalNode();
 
         // From https://github.com/httptoolkit/react-reverse-portal/issues/2
         return <div>
@@ -236,9 +237,9 @@ storiesOf('Portals', module)
                 <rect x={0} y={50} width={300} height={50} fill="lightblue"></rect>
                 <svg x={30} y={10}>
                     <portals.InPortal node={portalNode}>
-                        <text alignmentBaseline="text-before-edge" fill="red">
-                            test
-                        </text>
+                    <text alignmentBaseline="text-before-edge" fill="red">
+                        test
+                    </text>
                     </portals.InPortal>
                 </svg>
                 <svg x={30} y={70}>
