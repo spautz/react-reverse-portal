@@ -49,7 +49,8 @@ export const createPortalNode = <C extends Component<any>>(): PortalNode<C> => {
 
     const portalNode: PortalNode = {
         // @ts-ignore
-        element: null,//document.createElement('div'),
+        element: null,
+        // element: document.createElement('div'),
         setPortalProps: (props: ComponentProps<C>) => {
             initialProps = props;
         },
@@ -68,7 +69,16 @@ export const createPortalNode = <C extends Component<any>>(): PortalNode<C> => {
                 parent, lastPlaceholder,
             });
 
-            if (newParent.tagName !== newPlaceholder.tagName) {
+            if (!portalNode.element) {
+                if (newParent instanceof SVGElement) {
+                    portalNode.element = document.createElementNS(SVG_NAMESPACE, newParent.tagName);
+                } else {
+                    portalNode.element = document.createElement(newParent.tagName);
+                }
+
+                console.log('CREATED portalNode.element!!!', portalNode.element);
+
+            } else if (newParent.tagName !== newPlaceholder.tagName) {
                 const oldElement = portalNode.element;
 
                 if (newParent instanceof SVGElement) {
@@ -80,18 +90,13 @@ export const createPortalNode = <C extends Component<any>>(): PortalNode<C> => {
                 console.log('REPLACED portalNode.element!!!', oldElement, ' -> ', portalNode.element)
             }
 
-            if (portalNode.element) {
-                newParent.replaceChild(
-                    portalNode.element,
-                    newPlaceholder
-                );
+            newParent.replaceChild(
+                portalNode.element,
+                newPlaceholder
+            );
 
-                parent = newParent;
-                lastPlaceholder = newPlaceholder;
-            } else {
-                // Panic!
-                throw new Error('No element available, in portalNode.mount!');
-            }
+            parent = newParent;
+            lastPlaceholder = newPlaceholder;
         },
         unmount: (expectedPlaceholder?: Node) => {
             if (expectedPlaceholder && expectedPlaceholder !== lastPlaceholder) {
@@ -217,13 +222,10 @@ export class OutPortal<C extends Component<any>> extends React.PureComponent<Out
 
     render() {
         console.log('OutPortal.render()', this);
-        return <div ref={this.placeholderNode} />;
-
-        const { tagName:NodeTagName } = this.props.node.element;
 
         // Render a placeholder to the DOM, so we can get a reference into
         // our location in the DOM, and swap it out for the portaled node.
-        return <NodeTagName ref={this.placeholderNode} />;
+        return <div ref={this.placeholderNode} />;
     }
 
 }
